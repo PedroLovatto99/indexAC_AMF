@@ -18,18 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const nome = inputNome.value;
         const curso = inputCurso.value;
         
-        // Pega o CSRF token que o Django injetou no HTML
         const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
         
-        // Prepara a UI
         progressoContainer.style.display = 'block';
         downloadArea.style.display = 'none';
         btnGerar.disabled = true;
 
-        // Processa cada arquivo individualmente para não travar o back-end
         for (let i = 0; i < arquivos.length; i++) {
             
-            // Atualiza a interface
             let percentual = ((i + 1) / arquivos.length) * 100;
             barra.style.width = percentual + '%';
             statusTexto.innerText = `Analisando certificado ${i+1} de ${arquivos.length}...`;
@@ -40,12 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('curso', curso);
 
             try {
-                // Envia para a View de extração
                 const response = await fetch('/processar-arquivo/', {
                     method: 'POST',
                     body: formData,
                     headers: { 
-                        'X-CSRFToken': csrfToken // Necessário pro Django aceitar o POST
+                        'X-CSRFToken': csrfToken
                     }
                 });
 
@@ -57,13 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Finalizou o loop, pede para o Django juntar tudo no Excel
         statusTexto.innerText = "Concluído! Gerando sua planilha...";
         barra.classList.remove('progress-bar-animated');
         barra.classList.add('bg-success');
 
         try {
-            // Chama a rota de finalização passando os dados via query params
             const responseFinal = await fetch(`/gerar-planilha/?nome=${encodeURIComponent(nome)}&curso=${encodeURIComponent(curso)}`);
             
             if (responseFinal.ok) {
@@ -71,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const url = window.URL.createObjectURL(blob);
                 
                 linkDownload.href = url;
-                linkDownload.download = `Horas_Complementares_${nome.replace(/ /g, '_')}.xlsx`;
+                linkDownload.download = `Horas Complementares.xlsx`;
                 
                 downloadArea.style.display = 'block';
                 statusTexto.innerText = "Planilha pronta para download!";
@@ -82,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Erro ao baixar:", error);
         } finally {
-            // Libera o botão de gerar novamente
             btnGerar.disabled = false;
         }
     });
