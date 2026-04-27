@@ -2,8 +2,8 @@ import ollama
 import json
 import re
 
-def extrair_dados_com_ia(texto_pdf):
-    
+def extrair_dados_com_ia_imagem(caminho_imagem):
+
     prompt_sistema = """
     Você é um sistema de extração de dados focado e direto.
     Analise o documento e extraia as informações estritamente para o JSON abaixo.
@@ -34,20 +34,22 @@ def extrair_dados_com_ia(texto_pdf):
 
     try:
         resposta = ollama.chat(
-            model='llama3.1',
+            model='llava',
             messages=[
-                {'role': 'system', 'content': prompt_sistema},
-                {'role': 'user', 'content': texto_pdf}
+                {
+                    'role': 'user',
+                    'content': prompt_sistema,
+                    'images': [caminho_imagem]
+                }
             ],
             options={'temperature': 0.0} 
         )
 
         resultado = resposta['message']['content'].strip()
 
-        # DEBUG: Veja o que a IA extraiu cru antes do Python formatar
-        print("\n--- JSON CRU DA IA ---")
+        print("\n--- JSON CRU DA IA (VISÃO) ---")
         print(resultado)
-        print("----------------------\n")
+        print("------------------------------\n")
 
         match = re.search(r'\{.*\}', resultado, re.DOTALL)
         
@@ -65,7 +67,7 @@ def extrair_dados_com_ia(texto_pdf):
             horas = dados_brutos.get('horas', '')
 
             categorias_estagio = ['estagio', 'estágio', 'rescisao', 'rescisão', 'contrato', 'trabalho']
-
+            
             if tipo in categorias_estagio:
                 evento_final = f"Estágio na {nome}" if nome else "Contrato de Estágio"
             elif tipo == 'monitoria':
@@ -76,7 +78,7 @@ def extrair_dados_com_ia(texto_pdf):
             if semestre:
                 data_final = semestre
             elif inicio and fim and inicio != fim:
-                data_final = f"{inicio} até {fim}" 
+                data_final = f"{inicio} até {fim}"
             elif inicio:
                 data_final = inicio
             elif fim:
@@ -89,12 +91,12 @@ def extrair_dados_com_ia(texto_pdf):
             }
             
         else:
-            print("[!] Erro: Nenhum bloco JSON encontrado.")
+            print("[!] Erro: Nenhum bloco JSON encontrado pelo LLaVA.")
             return None
 
     except json.JSONDecodeError:
-        print("[!] Erro: Formato JSON inválido.")
+        print("[!] Erro: Formato JSON inválido no LLaVA.")
         return None
     except Exception as e:
-        print(f"[!] Erro de comunicação com o Ollama: {e}")
+        print(f"[!] Erro de comunicação com o LLaVA: {e}")
         return None
