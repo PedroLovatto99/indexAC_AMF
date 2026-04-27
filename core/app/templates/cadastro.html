@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Cadastro - IndexAC-AMF{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 p-4">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold text-primary">Criar Conta</h2>
+                <p class="text-muted small">Registre-se para organizar os seus certificados</p>
+            </div>
+            
+            {% if erro %}
+            <div class="alert alert-danger" role="alert">
+                {{ erro }}
+            </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'cadastro' %}">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="nome_completo" class="form-label">Nome Completo</label>
+                    <input type="text" name="nome_completo" class="form-control" placeholder="O seu nome completo" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="curso" class="form-label">Curso</label>
+                    <select name="curso" id="curso" class="form-select" required>
+                        <option value="" selected disabled>Selecione o seu curso...</option>
+                        <option value="ontopsicologia">Ontopsicologia</option>
+                        <option value="administracao">Administração</option>
+                        <option value="sistemas_informacao">Sistemas de Informação</option>
+                        <option value="direito">Direito</option>
+                        <option value="pedagogia">Pedagogia</option>
+                        <option value="ciencias_contabeis">Ciências Contábeis</option>
+                        <option value="hotelaria">Hotelaria</option>
+                        <option value="gastronomia">Gastronomia</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" name="email" class="form-control" placeholder="exemplo@amf.edu.br" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="senha" class="form-label">Senha</label>
+                    <input type="password" name="senha" class="form-control" placeholder="Crie uma senha forte" required>
+                </div>
+                
+                <button type="submit" class="btn btn-success w-100 py-2 fw-bold">Concluir Cadastro</button>
+                
+                <hr class="my-4">
+
+                <div class="text-center">
+                    <p class="text-muted small mb-1">Já possui uma conta?</p>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary w-100 fw-bold">Faça Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

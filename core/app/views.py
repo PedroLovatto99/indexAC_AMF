@@ -5,14 +5,72 @@ from django.http import JsonResponse, FileResponse
 from .utils.gerar_excel import gerar_excel_final
 from .utils.ia_texto import extrair_dados_com_ia_texto
 from .utils.extrair_texto import ExtratorCertificado
-import fitz
+from .models import PerfilAluno, CertificadoSalvo
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
 
 
 def index(request):
     return render(request, "index.html")
 
+
+def cadastro_aluno(request):
+    if request.method == 'POST':
+        nome = request.POST.get('nome_completo')
+        email = request.POST.get('email')
+        senha = request.POST.get('senha')
+        curso = request.POST.get('curso')
+
+        if User.objects.filter(username=email).exists():
+            return render(request, 'cadastro.html', {'erro': 'Este email já está cadastrado.'})
+
+        novo_usuario = User.objects.create_user(
+            username=email, 
+            email=email, 
+            password=senha
+        )
+
+        PerfilAluno.objects.create(
+            usuario=novo_usuario,
+            nome_completo=nome,
+            curso=curso
+        )
+
+        return redirect('login')
+    
+    return render(request, 'cadastro.html')
+
+class Login(LoginView):
+    template_name = 'login.html'
+    redirect_authenticated_user = True
+
+
+@login_required
+def dashboard_certificados(request):
+    novos = CertificadoSalvo.objects.filter(usuario=request.user, status='NOVO')
+    validados = CertificadoSalvo.objects.filter(usuario=request.user, status='VALIDADO')
+    
+    return render(request, 'dashboard.html', {
+        'certificados_novos': novos,
+        'certificados_validados': validados
+    })
+
+
+@login_required
+def mover_para_validado(request, certificado_id):
+    certificado = get_object_or_404(CertificadoSalvo, id=certificado_id, dono=request.user)
+    
+    certificado.status = 'VALIDADO'
+    certificado.save()
+    
+    return redirect('dashboard')
+
+
 def extrair_certificado(request):
     return render(request, "extrair_certificado.html")
+
 
 def processar_arquivo(request):
     if request.method == 'POST':
@@ -63,15 +121,29 @@ def processar_arquivo(request):
 
 def gerar_planilha(request):
     if request.method == 'GET':
-        nome_aluno = request.GET.get('nome', 'Aluno')
-        curso_aluno = request.GET.get('curso', 'Curso Não Informado')
+        nome = request.GET.get('nome', '')
+        curso_cru = request.GET.get('curso', '')
+
+        tradutor_cursos = {
+        'ontopsicologia': 'Ontopsicologia',
+        'administracao': 'Administração',
+        'sistemas_informacao': 'Sistemas de Informação',
+        'direito': 'Direito',
+        'pedagogia': 'Pedagogia',
+        'ciencias_contabeis': 'Ciências Contábeis',
+        'hotelaria': 'Hotelaria',
+        'gastronomia': 'Gastronomia',
+    }
+
+
+        curso_bonito = tradutor_cursos.get(curso_cru, curso_cru)
         
         dados_ia = request.session.get('certificados', [])
         
         if not dados_ia:
             return JsonResponse({'erro': 'Nenhum certificado foi processado.'}, status=400)
 
-        caminho_excel_pronto = gerar_excel_final(dados_ia, nome_aluno, curso_aluno)
+        caminho_excel_pronto = gerar_excel_final(dados_ia, nome, curso_bonito)
         
         request.session['certificados'] = []
         
