@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container custom-container">
+    <div class="card custom-card p-4">
+        
+        <form id="form-indexac">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome Completo</label>
+                <input type="text" id="nome" class="form-control" placeholder="Ex: Pedro Leal Lovatto" required>
+            </div>
+            <div class="mb-3">
+                <label for="curso" class="form-label">Curso</label>
+                <input type="text" id="curso" class="form-control" placeholder="Ex: Sistemas de Informação" required>
+            </div>
+            <div class="mb-3">
+                <label for="arquivos" class="form-label">Certificados (PDF)</label>
+                <input type="file" id="arquivos" class="form-control" multiple accept=".pdf" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100" id="btn-gerar">Gerar Planilha Excel</button>
+        </form>
+
+        <div id="progresso-container" class="mt-4" style="display: none;">
+            <label id="status-texto" class="form-label fw-bold text-primary">Processando certificados...</label>
+            <div class="progress">
+                <div id="barra" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div id="download-area" class="mt-4 text-center" style="display: none;">
+            <a id="link-download" class="btn btn-success w-100">Baixar Planilha Preenchida</a>
+        </div>
+    </div>
+</div>
+{% block extra_js %}
+    <script src="{% static 'js/main.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

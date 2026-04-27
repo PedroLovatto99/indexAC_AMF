@@ -1,54 +1,51 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IndexAC - Gerador de Horas AMF</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends 'base.html' %}
 
-<div class="container custom-container">
-    <div class="card custom-card p-4">
-        <h2 class="text-center mb-4">IndexAC</h2>
-        <p class="text-muted text-center">Transforme seus certificados em planilhas num clique.</p>
-        
-        <form id="form-indexac">
-            {% csrf_token %}
-            
-            <div class="mb-3">
-                <label for="nome" class="form-label">Nome Completo</label>
-                <input type="text" id="nome" class="form-control" placeholder="Ex: Pedro Leal Lovatto" required>
-            </div>
-            <div class="mb-3">
-                <label for="curso" class="form-label">Curso</label>
-                <input type="text" id="curso" class="form-control" placeholder="Ex: Sistemas de Informação" required>
-            </div>
-            <div class="mb-3">
-                <label for="arquivos" class="form-label">Certificados (PDF)</label>
-                <input type="file" id="arquivos" class="form-control" multiple accept=".pdf" required>
-            </div>
-            
-            <button type="submit" class="btn btn-primary w-100" id="btn-gerar">Gerar Planilha Excel</button>
-        </form>
+{% block title %}Início - Sistema de Horas{% endblock %}
 
-        <div id="progresso-container" class="mt-4">
-            <label id="status-texto" class="form-label fw-bold text-primary">Processando certificados...</label>
-            <div class="progress">
-                <div id="barra" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%"></div>
-            </div>
-        </div>
-
-        <div id="download-area" class="mt-4 text-center">
-            <a id="link-download" class="btn btn-success w-100">Baixar Planilha Preenchida</a>
-        </div>
-    </div>
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-5 fw-bold text-dark">Validação de Horas Complementares</h1>
+    <p class="lead text-muted">Facilite a validação dos seus certificados e acompanhe suas atividades na faculdade de forma automatizada.</p>
 </div>
 
-<script src="{% static 'js/main.js' %}"></script>
-</body>
-</html>
+<div class="row justify-content-center g-4">
+    
+    <div class="col-md-5">
+        <div class="card h-100 shadow border-0 card-hover">
+            <div class="card-body text-center p-5">
+                <div class="display-3 mb-3">📄</div>
+                <h3 class="card-title fw-bold">Extrair Certificados</h3>
+                <p class="card-text text-muted mb-4">Envie seus PDFs e deixe a Inteligência Artificial gerar a planilha preenchida automaticamente.</p>
+                
+                <a href="{% url 'extracao_arquivo' %}" class="btn btn-primary btn-lg w-100">Iniciar Extração</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card h-100 shadow-sm border-0 bg-white" style="opacity: 0.8;">
+            <div class="card-body text-center p-5">
+                <div class="display-3 mb-3">🎓</div>
+                <h3 class="card-title fw-bold">Guia de Horas</h3>
+                <p class="card-text text-muted mb-4">Descubra as regras, como conseguir horas complementares e como anexar o processo no drive.</p>
+                
+                <button class="btn btn-outline-secondary btn-lg w-100" disabled>Em Breve</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% block extra_css %}
+<style>
+    .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    }
+</style>
+{% endblock %}
+
+{% endblock %}

@@ -11,6 +11,9 @@ import fitz
 def index(request):
     return render(request, "index.html")
 
+def extrair_certificado(request):
+    return render(request, "extrair_certificado.html")
+
 def processar_arquivo(request):
     if request.method == 'POST':
         arquivo_pdf = request.FILES.get('certificado')
@@ -27,22 +30,15 @@ def processar_arquivo(request):
         dados_json = None
 
         try:
+            print(f"\n--- Processando: {arquivo_pdf.name} ---")
             extrator = ExtratorCertificado(caminho_temporario)
             texto_cru = extrator.executar_pipeline()
             
             if texto_cru:
                 dados_json = extrair_dados_com_ia_texto(texto_cru)
-                
             else:
-                doc = fitz.open(caminho_temporario)
-                pagina = doc.load_page(0)
-                pix = pagina.get_pixmap(dpi=150)
-                
-                caminho_imagem_temp = caminho_temporario.replace(".pdf", ".png")
-                pix.save(caminho_imagem_temp)
-                doc.close()
-
-                dados_json = extrair_dados_com_ia_texto(caminho_imagem_temp)
+                print("[!] Sem texto. Acionando LLaVA (Visão)...")
+                pass
 
             if dados_json:
                 certificados_lidos = request.session.get('certificados', [])
@@ -50,9 +46,11 @@ def processar_arquivo(request):
                 request.session['certificados'] = certificados_lidos
                 request.session.modified = True 
                 
+                print(f"[+] Sucesso! Já temos {len(certificados_lidos)} certificados na memória.")
                 return JsonResponse({'status': 'sucesso', 'dados': dados_json})
             else:
-                return JsonResponse({'erro': 'Nenhuma das IAs conseguiu interpretar o arquivo.'}, status=500)
+                print(f"[-] A IA falhou ao extrair dados de {arquivo_pdf.name}")
+                return JsonResponse({'erro': 'IA não conseguiu interpretar o arquivo.'}, status=500)
 
         finally:
             if os.path.exists(caminho_temporario):
@@ -82,3 +80,10 @@ def gerar_planilha(request):
             as_attachment=True, 
             filename="Horas Complementares.xlsx"
         )
+    
+def limpar_sessao(request):
+    if request.method == 'POST':
+        request.session['certificados'] = [] 
+        request.session.modified = True
+        return JsonResponse({'status': 'sucesso', 'mensagem': 'Sessão limpa'})
+    return JsonResponse({'erro': 'Método inválido'}, status=405)

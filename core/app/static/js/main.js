@@ -24,6 +24,17 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadArea.style.display = 'none';
         btnGerar.disabled = true;
 
+        // Limpa a sessão no backend para evitar duplicações
+        try {
+            await fetch('/limpar-sessao/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrfToken }
+            });
+        } catch (error) {
+            console.error("Erro ao limpar sessão:", error);
+        }
+
+        // Loop para enviar e processar cada arquivo um por vez
         for (let i = 0; i < arquivos.length; i++) {
             
             let percentual = ((i + 1) / arquivos.length) * 100;
@@ -52,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Finaliza o processo visualmente e solicita o download da planilha
         statusTexto.innerText = "Concluído! Gerando sua planilha...";
         barra.classList.remove('progress-bar-animated');
         barra.classList.add('bg-success');
@@ -75,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Erro ao baixar:", error);
         } finally {
+            // Reabilita o botão para que o usuário possa gerar novamente se quiser
             btnGerar.disabled = false;
         }
     });

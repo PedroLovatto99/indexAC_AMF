@@ -5,32 +5,31 @@ import re
 def extrair_dados_com_ia_imagem(caminho_imagem):
 
     prompt_sistema = """
-    Você é um sistema de extração de dados focado e direto.
-    Analise o documento e extraia as informações estritamente para o JSON abaixo.
-    IGNORE completamente logs de assinatura (Clicksign, DocuSign) e datas de emissão do documento.
+        Você é um sistema de extração de dados focado e direto para certificados acadêmicos.
+        Analise o documento e extraia as informações estritamente para o formato JSON abaixo.
+        
+        REGRA MÁXIMA SOBRE DATAS: Datas no final do documento acompanhadas do nome da cidade (ex: "Restinga Seca, 23 de setembro de 2025") são as DATAS DE EMISSÃO. É ESTRITAMENTE PROIBIDO colocar essa data em qualquer campo do JSON.
 
-    REGRAS DE EXTRAÇÃO:
-    - "tipo_documento": Avalie o texto e escreva apenas "certificado", "monitoria" ou "estagio".
-    - "nome_alvo": 
-      * Se certificado, o nome do evento. 
-      * Se monitoria, o nome da disciplina. 
-      * Se estagio/rescisão, procure por "Razão Social" ou "Empregador" e extraia apenas o nome da empresa.
-       * Se estagio/rescisão, extraia APENAS o nome curto da empresa (geralmente 1 a 3 palavras, ex: "FOIL"). É ESTRITAMENTE PROIBIDO incluir textos legais, frases de aviso, endereços ou jargões de contrato (ex: ignore frases como "A assistência no ato...").
-    - "horas": Apenas o número da carga horária. Deixe vazio "" se for estágio.
-    - "data_inicio": Data de início do evento ou Data de Admissão. Formato DD/MM/AAAA. É PROIBIDO usar a data de emissão/assinatura do documento (ex: "Restinga Seca, 10 de Fevereiro de 2026" ou similares na parte inferior do documento devem ser ignorados).
-    - "data_fim": Data de término do evento ou Data de Afastamento/Demissão. Formato DD/MM/AAAA. (Se ocorreu em um único dia, repita a data inicial). - É PROIBIDO usar a data de emissão/assinatura do documento (ex: "Restinga Seca, 10 de Fevereiro de 2026" ou similares na parte inferior do documento devem ser ignorados).
-    - "semestre": Se houver período letivo explícito (ex: 2024/2), coloque aqui. Senão, "".
+        REGRAS DE EXTRAÇÃO:
+        - "tipo_documento": Escreva apenas "certificado", "monitoria" ou "estagio".
+        - "papel": Se o texto disser expressamente "Comissão Organizadora", escreva "organizador". Caso contrário, escreva "participante". (Deixe vazio "" para estágio/monitoria).
+        - "nome_alvo": Extraia apenas o nome curto do evento, disciplina ou empresa. É PROIBIDO adicionar prefixos como "Comissão" ou o nome da faculdade.
+        - "horas": Apenas o número da carga horária. Se estiver em minutos, converta para horas (ex: 120 vira 2). Deixe "" para estágio.
+        - "data_inicio": A data exata em que o EVENTO começou. Formato DD/MM/AAAA.
+        - "data_fim": A data em que o EVENTO terminou. Se o evento ocorreu em apenas UM DIA, repita exatamente o mesmo valor da data_inicio aqui. JAMAIS use a data da cidade para preencher este campo.
+        - "semestre": Se houver período letivo explícito (ex: 2024/2), coloque aqui. Senão, "".
 
-    FORMATO EXATO DA RESPOSTA:
-    {
-        "tipo_documento": "",
-        "nome_alvo": "",
-        "horas": "",
-        "data_inicio": "",
-        "data_fim": "",
-        "semestre": ""
-    }
-    """
+        FORMATO EXATO DA RESPOSTA:
+        {
+            "tipo_documento": "",
+            "papel": "",
+            "nome_alvo": "",
+            "horas": "",
+            "data_inicio": "",
+            "data_fim": "",
+            "semestre": ""
+        }
+        """
 
     try:
         resposta = ollama.chat(
