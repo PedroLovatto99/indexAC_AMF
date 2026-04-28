@@ -28,8 +28,9 @@ class PerfilAluno(models.Model):
 
 class CertificadoSalvo(models.Model):
     STATUS_CHOICES = [
-        ('NOVO', 'Certificado Novo'),
-        ('VALIDADO', 'Já Validado pelo Coordenador'),
+        ('NOVO', 'Novo (Aguardando Processamento)'),
+        ('PROCESSADO', 'Processado (Enviado à Coordenadoria)'),
+        ('VALIDADO', 'Validado (Finalizado)'),
     ]
 
     dono = models.ForeignKey(User, on_delete=models.CASCADE, related_name='arquivos_salvos')

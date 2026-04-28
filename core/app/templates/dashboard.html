@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Meus Certificados - IndexAC{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+'<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary">Gerenciador de Certificados</h2>
+    
+    <form action="{% url 'upload_manual' %}" method="post" enctype="multipart/form-data" id="form-upload-manual">
+        {% csrf_token %}
+        <input type="file" name="arquivos" id="input-arquivos" multiple accept=".pdf" style="display: none;" onchange="document.getElementById('form-upload-manual').submit()">
+        
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('input-arquivos').click()">
+                <i class="bi bi-cloud-upload"></i> Guardar Novos
+            </button>
+        </div>
+    </form>
+</div>'
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0 text-secondary"><i class="bi bi-folder-plus me-2"></i>Certificados Novos</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for cert in certificados_novos %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <div class="d-flex align-items-center overflow-hidden">
+                                <i class="bi bi-file-earmark-pdf-fill text-danger fs-4 me-3"></i>
+                                <div class="text-truncate">
+                                    <h6 class="mb-0 text-truncate">{{ cert.arquivo.name|cut:"certificados/" }}</h6>
+                                    <small class="text-muted">Enviado em {{ cert.data_upload|date:"d/m/Y" }}</small>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="{{ cert.arquivo.url }}" download class="btn btn-sm btn-outline-secondary" title="Baixar">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                                <a href="{% url 'validar_certificado' cert.id %}" class="btn btn-sm btn-success" title="Mover para Validados">
+                                    <i class="bi bi-check-lg"></i> Validar
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="p-5 text-center text-muted">Nenhum certificado pendente.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0 text-success"><i class="bi bi-folder-check me-2"></i>Já validados</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for cert in certificados_validados %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center p-3 bg-light">
+                            <div class="d-flex align-items-center overflow-hidden">
+                                <i class="bi bi-file-earmark-check-fill text-success fs-4 me-3"></i>
+                                <div class="text-truncate">
+                                    <h6 class="mb-0 text-truncate text-muted">{{ cert.arquivo.name|cut:"certificados/" }}</h6>
+                                    <small class="text-muted">Inserido em {{ cert.data_upload|date:"d/m/Y" }}</small>
+                                </div>
+                            </div>
+                            <a href="{{ cert.arquivo.url }}" download class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-download"></i>
+                            </a>
+                        </div>
+                        {% empty %}
+                        <div class="p-5 text-center text-muted">Ainda não há certificados validados.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

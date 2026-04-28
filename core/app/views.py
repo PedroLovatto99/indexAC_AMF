@@ -12,6 +12,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
+from django.contrib import messages
 
 
 def index(request):
@@ -51,18 +52,42 @@ class Login(LoginView):
 
 @login_required
 def dashboard_certificados(request):
-    novos = CertificadoSalvo.objects.filter(usuario=request.user, status='NOVO')
-    validados = CertificadoSalvo.objects.filter(usuario=request.user, status='VALIDADO')
+    novos = CertificadoSalvo.objects.filter(dono=request.user, status='NOVO')
+
+    verificados = CertificadoSalvo.objects.filter(
+        dono=request.user, 
+        status__in=['PROCESSADO', 'VALIDADO']
+    )
     
     return render(request, 'dashboard.html', {
         'certificados_novos': novos,
-        'certificados_validados': validados
+        'certificados_validados': verificados
     })
 
+@login_required
+def upload_manual_certificado(request):
+    if request.method == 'POST':
+        arquivos = request.FILES.getlist('arquivos')
+        
+        if not arquivos:
+            messages.error(request, "Nenhum arquivo foi selecionado.")
+            return redirect('dashboard')
+
+        for f in arquivos:
+            CertificadoSalvo.objects.create(
+                dono=request.user,
+                arquivo=f,
+                status='NOVO'
+            )
+            
+        messages.success(request, f"{len(arquivos)} certificados adicionados com sucesso!")
+        return redirect('dashboard')
+    
+    return redirect('dashboard')
 
 @login_required
-def mover_para_validado(request, certificado_id):
-    certificado = get_object_or_404(CertificadoSalvo, id=certificado_id, dono=request.user)
+def mover_para_validado(request, cert_id):
+    certificado = get_object_or_404(CertificadoSalvo, id=cert_id, dono=request.user)
     
     certificado.status = 'VALIDADO'
     certificado.save()
@@ -89,6 +114,7 @@ def processar_arquivo(request):
         caminho_imagem_temp = None
         dados_json = None
 
+
         try:
             print(f"\n--- Processando: {arquivo_pdf.name} ---")
             extrator = ExtratorCertificado(caminho_temporario)
@@ -108,8 +134,14 @@ def processar_arquivo(request):
                 
                 dados_json = extrair_dados_com_ia_imagem(caminho_imagem_temp)
                 
-
             if dados_json:
+                if request.user.is_authenticated:
+                    CertificadoSalvo.objects.create(
+                        dono=request.user,
+                        arquivo=arquivo_pdf,
+                        status='PROCESSADO'
+                    )
+
                 certificados_lidos = request.session.get('certificados', [])
                 certificados_lidos.append(dados_json)
                 request.session['certificados'] = certificados_lidos

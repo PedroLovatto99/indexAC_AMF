@@ -12,4 +12,6 @@ urlpatterns = [
     path('login/', Login.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
     path('meus-certificados/', dashboard_certificados, name='dashboard'),
+    path('upload-manual/', upload_manual_certificado, name='upload_manual'),
+    path('validar-certificado/<int:cert_id>/', mover_para_validado, name='validar_certificado'),
 ]
