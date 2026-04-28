@@ -1,9 +1,11 @@
 from django.shortcuts import render
 import os
+import fitz
 import tempfile
 from django.http import JsonResponse, FileResponse
 from .utils.gerar_excel import gerar_excel_final
 from .utils.ia_texto import extrair_dados_com_ia_texto
+from .utils.ia_imagem import extrair_dados_com_ia_imagem
 from .utils.extrair_texto import ExtratorCertificado
 from .models import PerfilAluno, CertificadoSalvo
 from django.shortcuts import render, get_object_or_404, redirect
@@ -95,8 +97,17 @@ def processar_arquivo(request):
             if texto_cru:
                 dados_json = extrair_dados_com_ia_texto(texto_cru)
             else:
-                print("[!] Sem texto. Acionando LLaVA (Visão)...")
-                pass
+                print("[!] Sem texto. Acionando minicpm-v (Visão)...")
+                doc = fitz.open(caminho_temporario)
+                pagina = doc.load_page(0)
+                pix = pagina.get_pixmap()
+                
+                caminho_imagem_temp = temp_pdf.name + ".png"
+                pix.save(caminho_imagem_temp)
+                doc.close()
+                
+                dados_json = extrair_dados_com_ia_imagem(caminho_imagem_temp)
+                
 
             if dados_json:
                 certificados_lidos = request.session.get('certificados', [])
