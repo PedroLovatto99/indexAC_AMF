@@ -1,0 +1,523 @@
+{% extends 'base.html' %}
+
+{% block title %}Atividades Complementares - IndexAC{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-primary"><i class="bi bi-info-circle-fill me-2"></i>Guia de Atividades Complementares</h2>
+                <p class="text-muted">Consulte a equivalência de horas do seu curso e veja como enviar seus certificados para a secretaria.</p>
+            </div>
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">O que são as Atividades Complementares?</h5>
+                    <p class="text-secondary">
+                        As Atividades Complementares de Graduação compreendem atividades de Ensino, Pesquisa e Extensão desenvolvidas para aprimorar a formação acadêmica. 
+                    </p>
+                    <div class="alert alert-warning border-0 shadow-sm mt-3 mb-0">
+                        <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                        <strong>Atenção:</strong> É vedado o preenchimento da carga-horária global mínima com um só tipo de atividade. Você deve diversificar seus certificados!
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="fw-bold text-dark mb-3 mt-5"><i class="bi bi-table me-2"></i>Tabelas de Equivalência por Curso</h5>
+            
+            <div class="accordion shadow-sm" id="accordionCursos">
+
+                <div class="accordion-item border-0 border-bottom">
+                    <h2 class="accordion-header" id="headingSI">
+                        <button class="accordion-button collapsed fw-bold text-primary bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSI" aria-expanded="false" aria-controls="collapseSI">
+                            Sistemas de Informação e Administração
+                        </button>
+                    </h2>
+                    <div id="collapseSI" class="accordion-collapse collapse" aria-labelledby="headingSI" data-bs-parent="#accordionCursos">
+                        <div class="accordion-body">
+                            <div class="mb-3">
+                                <span class="badge bg-primary fs-6 me-2">SI: 120h (40h Ensino | 40h Pesquisa | 40h Extensão)</span>
+                                <span class="badge bg-secondary fs-6">ADM: 150h (50h Ensino | 50h Pesquisa | 50h Extensão)</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle small">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Categoria</th>
+                                            <th>Atividade</th>
+                                            <th>Equivalência</th>
+                                            <th>Máximo Permitido</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td rowspan="6" class="fw-bold text-center bg-light">Ensino</td>
+                                            <td>Disciplinas extracurriculares afins</td>
+                                            <td>1h certificada = 1h aproveitada</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Disciplinas não abrangidas na base curricular</td>
+                                            <td>1h certificada = 1h aproveitada</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cursos de Língua Estrangeira</td>
+                                            <td>1h para cada 5h cursadas</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cursos de TI (Tecnologia da Informação)</td>
+                                            <td>1h para cada 2h cursadas</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Monitorias/Tutoria</td>
+                                            <td>1h para cada 2h realizadas</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Estágio Extracurricular Orientado</td>
+                                            <td>1h para cada 5h de estágio</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td rowspan="4" class="fw-bold text-center bg-light">Pesquisa</td>
+                                            <td>Trabalhos publicados em periódicos</td>
+                                            <td>15h por trabalho</td>
+                                            <td>40 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Participação no Núcleo de Pesquisa (NIP)</td>
+                                            <td>1h para cada 3h de pesquisa</td>
+                                            <td>40 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Iniciação Científica</td>
+                                            <td>1h para cada 2h realizadas</td>
+                                            <td>40 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Assistência a defesas de monografia</td>
+                                            <td>1h por monografia assistida</td>
+                                            <td>20 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td rowspan="4" class="fw-bold text-center bg-light">Extensão</td>
+                                            <td>Seminários, Palestras, Simpósios e Cursos de Extensão</td>
+                                            <td>1h para cada 3h de evento</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Prática Profissional em empresas ou órgãos</td>
+                                            <td>1h para cada 5h de atividade</td>
+                                            <td>20 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Projetos Extensionistas (Voluntário)</td>
+                                            <td>1h para cada 5h de atividade</td>
+                                            <td>20 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Participação em Diretório/CA, Colegiados e Comissões</td>
+                                            <td>10h por semestre de representação</td>
+                                            <td>20 horas</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 border-bottom">
+                    <h2 class="accordion-header" id="headingDir">
+                        <button class="accordion-button collapsed fw-bold text-primary bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDir" aria-expanded="false" aria-controls="collapseDir">
+                            Direito
+                        </button>
+                    </h2>
+                    <div id="collapseDir" class="accordion-collapse collapse" aria-labelledby="headingDir" data-bs-parent="#accordionCursos">
+                        <div class="accordion-body">
+                            <div class="mb-3">
+                                <span class="badge bg-primary fs-6">Total: 243h (81h Ensino | 81h Pesquisa | 81h Extensão)</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle small">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Categoria</th>
+                                            <th>Atividade</th>
+                                            <th>Equivalência</th>
+                                            <th>Máx. Permitido</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Ensino</td>
+                                            <td>Disciplinas avulsas, cursos de línguas (desde o ingresso) e monitoria.</td>
+                                            <td>Variável (Cursos: 10h. Disciplinas/Monitoria: 30h)</td>
+                                            <td>Até 60 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Pesquisa</td>
+                                            <td>Trabalhos publicados, Iniciação Científica e Assistência de bancas.</td>
+                                            <td>Artigos: 30h. Defesas: 5h. Grupos de pesquisa: 10h</td>
+                                            <td>Até 90 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Extensão</td>
+                                            <td>Eventos científico-culturais, palestras, projetos comunitários e CA.</td>
+                                            <td>Eventos: CH do certificado. CA: 20h. Projetos de verão: 30h.</td>
+                                            <td>Até 81 horas</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 border-bottom">
+                    <h2 class="accordion-header" id="headingCont">
+                        <button class="accordion-button collapsed fw-bold text-primary bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCont" aria-expanded="false" aria-controls="collapseCont">
+                            Ciências Contábeis
+                        </button>
+                    </h2>
+                    <div id="collapseCont" class="accordion-collapse collapse" aria-labelledby="headingCont" data-bs-parent="#accordionCursos">
+                        <div class="accordion-body">
+                            <div class="mb-3">
+                                <span class="badge bg-primary fs-6">Total: 120h (40h Ensino | 40h Pesquisa | 40h Extensão)</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle small">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Categoria</th>
+                                            <th>Atividade</th>
+                                            <th>Equivalência</th>
+                                            <th>Máx. Permitido</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Ensino</td>
+                                            <td>Disciplinas afins, Cursos na área, Idiomas (1h/5h), Monitoria (1h/2h) e Estágio extra (1h/5h).</td>
+                                            <td>Disciplinas/Cursos: 1h = 1h</td>
+                                            <td>30 a 40h</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Pesquisa</td>
+                                            <td>Artigos publicados, Grupos de Pesquisa (1h/3h) e Trabalhos em Anais (15h/trab).</td>
+                                            <td>Qualis B4+: 40h. Qualis B5/C: 20h</td>
+                                            <td>40 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Extensão</td>
+                                            <td>Seminários, Palestras (1h/1h), Visitas Técnicas e Projetos.</td>
+                                            <td>1h certificada = 1h aproveitada</td>
+                                            <td>40 horas</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 border-bottom">
+                    <h2 class="accordion-header" id="headingOnto">
+                        <button class="accordion-button collapsed fw-bold text-primary bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOnto" aria-expanded="false" aria-controls="collapseOnto">
+                            Bacharelado em Ontopsicologia
+                        </button>
+                    </h2>
+                    <div id="collapseOnto" class="accordion-collapse collapse" aria-labelledby="headingOnto" data-bs-parent="#accordionCursos">
+                        <div class="accordion-body">
+                            <div class="mb-3">
+                                <span class="badge bg-primary fs-6">Total: 204h (68h Ensino | 68h Pesquisa | 68h Extensão)</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle small">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Categoria</th>
+                                            <th>Atividade</th>
+                                            <th>Equivalência</th>
+                                            <th>Máx. Permitido</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td rowspan="4" class="fw-bold text-center bg-light">Ensino</td>
+                                            <td>Eventos nos Centros Internacionais, Residences e OntoArte</td>
+                                            <td>1h para cada 2h de atividades</td>
+                                            <td>40 horas (cada)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Disciplinas afins ou não abrangidas na grade</td>
+                                            <td>1h certificada = 1h aproveitada</td>
+                                            <td>40 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Cursos de Língua Estrangeira e Estágios extra</td>
+                                            <td>1h para cada 5h cursadas</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Monitorias/Tutoria</td>
+                                            <td>1h para cada 2h realizadas</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td rowspan="3" class="fw-bold text-center bg-light">Pesquisa</td>
+                                            <td>Trabalhos publicados, Iniciação Científica e Núcleo NIP</td>
+                                            <td>Variável (NIP/IC: 40h max)</td>
+                                            <td>40 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Participação em eventos científicos</td>
+                                            <td>1h para cada 3h de evento</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Assistência a defesas de monografia</td>
+                                            <td>2h por monografia assistida</td>
+                                            <td>20 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td rowspan="4" class="fw-bold text-center bg-light">Extensão</td>
+                                            <td>Instrumentos de intervenção (cinelogias, psicoteas, etc) e Arte/Cultura</td>
+                                            <td>1h para cada 2h de evento</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Seminários, palestras e afins</td>
+                                            <td>1h para cada 3h de evento</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Prática Profissional / Aplicações da Metodologia</td>
+                                            <td>1h para cada 5h de prática</td>
+                                            <td>30 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Projetos comunitários, extracurriculares e Diretório</td>
+                                            <td>Variável (Projetos: 1h/5h)</td>
+                                            <td>20 horas</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 border-bottom">
+                    <h2 class="accordion-header" id="headingPed">
+                        <button class="accordion-button collapsed fw-bold text-primary bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePed" aria-expanded="false" aria-controls="collapsePed">
+                            Licenciatura em Pedagogia
+                        </button>
+                    </h2>
+                    <div id="collapsePed" class="accordion-collapse collapse" aria-labelledby="headingPed" data-bs-parent="#accordionCursos">
+                        <div class="accordion-body">
+                            <div class="mb-3">
+                                <span class="badge bg-primary fs-6">Total: 200h (67h Ensino | 67h Pesquisa | 66h Extensão)</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle small">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Categoria</th>
+                                            <th>Atividade</th>
+                                            <th>Equivalência</th>
+                                            <th>Máx. Permitido</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Ensino</td>
+                                            <td>Disciplinas afins (10h), não abrangidas (40h), Monitorias (30h), Idiomas e Estágios Extra (1h/5h).</td>
+                                            <td>Disciplinas: 1h = 1h. Monitoria: 1h/2h</td>
+                                            <td>10 a 40h</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Pesquisa</td>
+                                            <td>Trabalhos publicados, Iniciação Científica e Núcleo NIP (40h). Defesas de monografia (20h).</td>
+                                            <td>Artigos: 15h. Defesas: 2h/assistida</td>
+                                            <td>20 a 40h</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Extensão</td>
+                                            <td>Seminários (1h/3h), Prática de Ensino a partir do 3º sem (1h/5h) e Projetos voluntários.</td>
+                                            <td>Seminários: 30h máx. CA e Práticas: 20h máx</td>
+                                            <td>20 a 30h</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0 border-bottom">
+                    <h2 class="accordion-header" id="headingHot">
+                        <button class="accordion-button collapsed fw-bold text-primary bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHot" aria-expanded="false" aria-controls="collapseHot">
+                            Tecnólogo em Hotelaria
+                        </button>
+                    </h2>
+                    <div id="collapseHot" class="accordion-collapse collapse" aria-labelledby="headingHot" data-bs-parent="#accordionCursos">
+                        <div class="accordion-body">
+                            <div class="mb-3">
+                                <span class="badge bg-primary fs-6">Total: 55h (18h Ensino | 18h Pesquisa | 19h Extensão)</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle small">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Categoria</th>
+                                            <th>Atividade</th>
+                                            <th>Equivalência</th>
+                                            <th>Máx. Permitido</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Ensino</td>
+                                            <td>Disciplinas avulsas (20h), Monitorias (1h/2h), Idiomas (1h/5h) e Estágio Extra (1h/5h).</td>
+                                            <td>1h certificada = 1h aproveitada (disciplinas)</td>
+                                            <td>10 a 20h</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Pesquisa</td>
+                                            <td>Iniciação Científica (1h/2h), NIP (1h/3h) e Defesas de monografia (2h/assistida).</td>
+                                            <td>Artigos: 15h por trabalho publicado</td>
+                                            <td>15 a 20h</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Extensão</td>
+                                            <td>Seminários (1h/3h), Voluntariado em eventos típicos (1h/5h) e Viagens Técnicas (10h/viagem).</td>
+                                            <td>Voluntariado: 20h. Viagens e CA: 10h</td>
+                                            <td>10 a 20h</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-0">
+                    <h2 class="accordion-header" id="headingGastro">
+                        <button class="accordion-button collapsed fw-bold text-primary bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGastro" aria-expanded="false" aria-controls="collapseGastro">
+                            Bacharelado em Gastronomia
+                        </button>
+                    </h2>
+                    <div id="collapseGastro" class="accordion-collapse collapse" aria-labelledby="headingGastro" data-bs-parent="#accordionCursos">
+                        <div class="accordion-body">
+                            <div class="mb-3">
+                                <span class="badge bg-primary fs-6">Total: 80h (27h Ensino | 26h Pesquisa | 27h Extensão)</span>
+                                <p class="small text-muted mt-2">Para a Gastronomia, o preenchimento é estruturado em Grupos e o aproveitamento é calculado em "Horas por atividade".</p>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover align-middle small">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Grupo</th>
+                                            <th>Descrição da Atividade</th>
+                                            <th>CH por Atividade</th>
+                                            <th>Máximo de Ativ.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td rowspan="5" class="fw-bold text-center bg-light">Grupo 1<br><span class="fw-normal text-muted">Científico-Acadêmicas</span></td>
+                                            <td>Disciplinas avulsas (A1)</td>
+                                            <td>15h</td>
+                                            <td>1 atividade</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Eventos e Worshops na área de alimentos (B1) / Palestras (C1)</td>
+                                            <td>Evento: 2h | Palestra: 1h</td>
+                                            <td>15 ativ. | 10 ativ.</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Visita Técnica (D1) / Extensão (E1) / Idiomas (F1) / Libras (G1)</td>
+                                            <td>Visita/Ext.: 3h | Idiomas: 2h | Libras: 10h</td>
+                                            <td>Varia (máx 12 ativ)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pesquisa/Estudo (H1) / Apresentação (I1/J1) / Publicações (K1/L1)</td>
+                                            <td>Pesq: 3h | Trab: 4h | Artigo: 3h</td>
+                                            <td>Varia (máx 15 ativ)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Organização, Comissões e Representação (N1/O1/P1)</td>
+                                            <td>6h</td>
+                                            <td>1 atividade</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Grupo 2<br><span class="fw-normal text-muted">Socioculturais</span></td>
+                                            <td>Vídeos, Teatro e Exposições (A2) / Ação Social (C2) / Eventos AMF (D2) / Formação Cidadã (E2)</td>
+                                            <td>Cultura: 1h | Social: 3h | Formação: 2h</td>
+                                            <td>Até 15 ativ.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Grupo 3<br><span class="fw-normal text-muted">Prática Profissional</span></td>
+                                            <td>Monitoria (A3) / Estágio extra (B3) / Intervenção (C3) / Instrutor (D4) / Projetos (E5)</td>
+                                            <td>Monitoria: 5h | Estágio: 12h | Instrutor: 2h</td>
+                                            <td>Até 15 ativ.</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold text-center bg-light">Grupo 4<br><span class="fw-normal text-muted">Transversais</span></td>
+                                            <td>Cursos de Temas Transversais Oficiais (A4) / Eventos de Alta Envergadura (T1)</td>
+                                            <td>Cursos: 40h | Eventos: 3h</td>
+                                            <td>1 ativ. | 3 ativ.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card shadow-sm border-0 mt-5 mb-4 border-start border-success border-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold text-success border-bottom pb-2 mb-4"><i class="bi bi-send-check me-2"></i>Passo a Passo: Como enviar para a Secretaria</h5>
+                    
+                    <ul class="list-group list-group-flush list-group-numbered">
+                        <li class="list-group-item bg-transparent py-3">
+                            <strong>Crie do Google Drive uma pasta</strong> escrito <em>Certificados</em> e dentro dela coloque todos os certificados e a Planilha Excel preenchida. 
+                            <br><small class="text-muted">EX: Se preencheu 20 certificados na planilha deve ser anexado os 20 certificados.</small>
+                        </li>
+                        <li class="list-group-item bg-transparent py-3">
+                            Ainda na Pasta criada, ir nos <i class="bi bi-three-dots-vertical"></i>, clicar em <strong>Compartilhar</strong> e selecionar em Acesso Geral - <strong>Qualquer pessoa com o Link</strong> como leitor e após copiar o link da pasta.
+                        </li>
+                        <li class="list-group-item bg-transparent py-3">
+                            Após isso, ir no <strong>Requerimento Online</strong> (<a href="https://forms.gle/SUkxs78vgsXHHN8u5" target="_blank" class="text-decoration-none">https://forms.gle/SUkxs78vgsXHHN8u5</a>) e preencher seus dados.
+                        </li>
+                        <li class="list-group-item bg-transparent py-3">
+                            Selecionar a opção <strong>"Requerimento Atividades Complementares"</strong> - Avançar.
+                        </li>
+                        <li class="list-group-item bg-transparent py-3">
+                            A opção a seguir dará as orientações e o link para baixar a planilha. Como você já usou a IA do sistema para baixar a sua planilha, <strong>ignore o link fornecido</strong>.
+                        </li>
+                        <li class="list-group-item bg-transparent py-3">
+                            Selecionar a opção <strong>"Acessei para envio da planilha + certificados"</strong> - Avançar.
+                        </li>
+                        <li class="list-group-item bg-transparent py-3">
+                            <strong>Colar o link gerado</strong> da Pasta criada (na opção 2 acima) neste campo - Avançar.
+                        </li>
+                        <li class="list-group-item bg-transparent py-3">
+                            Clicar nas opções obrigatórias e depois em <strong>Enviar</strong>.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -19,6 +19,10 @@ def index(request):
     return render(request, "index.html")
 
 
+def guia_horas(request):
+    return render(request, "guia.html")
+
+
 def cadastro_aluno(request):
     if request.method == 'POST':
         nome = request.POST.get('nome_completo')
@@ -98,47 +102,75 @@ def mover_para_validado(request, cert_id):
 def extrair_certificado(request):
     return render(request, "extrair_certificado.html")
 
+@login_required
+def listar_certificados_novos(request):
+    certificados = CertificadoSalvo.objects.filter(
+        dono=request.user, 
+        status='NOVO'
+    ).values('id', 'arquivo')
+    
+    dados = [
+        {'id': c['id'], 'nome': os.path.basename(c['arquivo'])} 
+        for c in certificados
+    ]
+    return JsonResponse({'certificados': dados})
+
 
 def processar_arquivo(request):
     if request.method == 'POST':
-        arquivo_pdf = request.FILES.get('certificado')
+        arquivo_upload = request.FILES.get('certificado')
+        id_existente = request.POST.get('id_existente')
         
-        if not arquivo_pdf:
-            return JsonResponse({'erro': 'Nenhum arquivo enviado'}, status=400)
+        if not arquivo_upload and not id_existente:
+            return JsonResponse({'erro': 'Nenhum arquivo ou ID enviado'}, status=400)
 
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
-            for chunk in arquivo_pdf.chunks():
-                temp_pdf.write(chunk)
-            caminho_temporario = temp_pdf.name
-
-        caminho_imagem_temp = None
+        caminho_temporario = None
+        cert_instancia = None
         dados_json = None
 
-
         try:
-            print(f"\n--- Processando: {arquivo_pdf.name} ---")
-            extrator = ExtratorCertificado(caminho_temporario)
+            if id_existente:
+                cert_instancia = get_object_or_404(CertificadoSalvo, id=id_existente, dono=request.user)
+                caminho_documento = cert_instancia.arquivo.path
+                print(f"\n--- Processando do BD: {cert_instancia.arquivo.name} ---")
+
+            else:
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
+                    for chunk in arquivo_upload.chunks():
+                        temp_pdf.write(chunk)
+                caminho_temporario = temp_pdf.name
+                caminho_documento = caminho_temporario
+                print(f"\n--- Processando Upload: {arquivo_upload.name} ---")
+
+            extrator = ExtratorCertificado(caminho_documento)
             texto_cru = extrator.executar_pipeline()
             
             if texto_cru:
                 dados_json = extrair_dados_com_ia_texto(texto_cru)
             else:
-                print("[!] Sem texto. Acionando minicpm-v (Visão)...")
-                doc = fitz.open(caminho_temporario)
+                print("[!] Sem texto. Acionando MiniCPM-V (Visão)...")
+                doc = fitz.open(caminho_documento)
                 pagina = doc.load_page(0)
                 pix = pagina.get_pixmap()
                 
-                caminho_imagem_temp = temp_pdf.name + ".png"
+                caminho_imagem_temp = caminho_documento + "_temp.png"
                 pix.save(caminho_imagem_temp)
                 doc.close()
                 
                 dados_json = extrair_dados_com_ia_imagem(caminho_imagem_temp)
                 
+                if os.path.exists(caminho_imagem_temp):
+                    os.remove(caminho_imagem_temp)
+
             if dados_json:
-                if request.user.is_authenticated:
+                if cert_instancia:
+                    cert_instancia.status = 'PROCESSADO'
+                    cert_instancia.save()
+                
+                elif request.user.is_authenticated:
                     CertificadoSalvo.objects.create(
                         dono=request.user,
-                        arquivo=arquivo_pdf,
+                        arquivo=arquivo_upload,
                         status='PROCESSADO'
                     )
 
@@ -150,14 +182,17 @@ def processar_arquivo(request):
                 print(f"[+] Sucesso! Já temos {len(certificados_lidos)} certificados na memória.")
                 return JsonResponse({'status': 'sucesso', 'dados': dados_json})
             else:
-                print(f"[-] A IA falhou ao extrair dados de {arquivo_pdf.name}")
+                print("[-] A IA falhou ao extrair dados.")
                 return JsonResponse({'erro': 'IA não conseguiu interpretar o arquivo.'}, status=500)
 
+        except Exception as e:
+            print(f"[!] Erro crítico: {str(e)}")
+            return JsonResponse({'erro': f'Erro interno: {str(e)}'}, status=500)
+
         finally:
-            if os.path.exists(caminho_temporario):
+
+            if caminho_temporario and os.path.exists(caminho_temporario):
                 os.remove(caminho_temporario)
-            if caminho_imagem_temp and os.path.exists(caminho_imagem_temp):
-                os.remove(caminho_imagem_temp)
                 
     return JsonResponse({'erro': 'Método inválido'}, status=405)
 

@@ -1,65 +1,290 @@
 {% extends 'base.html' %}
-{% load static %}
+
+{% block title %}Extrair Certificados - IndexAC{% endblock %}
 
 {% block content %}
-<div class="container custom-container">
-    <div class="card custom-card p-4 shadow-sm">
-        <h2 class="text-center mb-4">Extração de Dados</h2>
-        
-        <form id="form-indexac">
-            {% csrf_token %}
-            
-            <div class="mb-3">
-                <label for="nome" class="form-label">Nome Completo</label>
-                {% if user.is_authenticated %}
-                    <input type="text" id="nome" class="form-control bg-light" value="{{ user.perfil.nome_completo }}" readonly>
-                    <div class="form-text">Dados carregados do seu perfil.</div>
-                {% else %}
-                    <input type="text" id="nome" class="form-control" required>
-                {% endif %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <form id="form-extracao">
+                        {% csrf_token %}
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="nome" class="form-label fw-bold">Nome Completo</label>
+                                {% if user.is_authenticated %}
+                                    <input type="text" id="nome" class="form-control bg-light" value="{{ user.perfil.nome_completo }}" readonly>
+                                {% else %}
+                                    <input type="text" id="nome" class="form-control" required>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="curso" class="form-label fw-bold">Curso</label>
+                                {% if user.is_authenticated %}
+                                    <input type="hidden" id="curso" value="{{ user.perfil.curso }}">
+                                    <input type="text" class="form-control bg-light" value="{{ user.perfil.get_curso_display }}" readonly>
+                                {% else %}
+                                    <select id="curso" class="form-select" required>
+                                        <option value="" selected disabled>Selecione seu curso...</option>
+                                        <option value="ontopsicologia">Ontopsicologia</option>
+                                        <option value="administracao">Administração</option>
+                                        <option value="sistemas_informacao">Sistemas de Informação</option>
+                                        <option value="direito">Direito</option>
+                                        <option value="pedagogia">Pedagogia</option>
+                                        <option value="ciencias_contabeis">Ciências Contábeis</option>
+                                        <option value="hotelaria">Hotelaria</option>
+                                        <option value="gastronomia">Gastronomia</option>
+                                    </select>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label d-flex justify-content-between w-100 fw-bold">
+                                Fazer upload de novos PDFs
+                                {% if user.is_authenticated %}
+                                <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalCertificados">
+                                    <i class="bi bi-folder2-open"></i> Selecionar da minha conta
+                                </button>
+                                {% endif %}
+                            </label>
+                            <input type="file" id="arquivos" class="form-control" multiple accept=".pdf">
+                            <div id="aviso-selecao-banco" class="text-success small fw-bold mt-2" style="display: none;">
+                                <i class="bi bi-check-circle-fill"></i> <span id="qtd-selecionados">0</span> arquivo(s) da conta pronto(s) para processar.
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 fw-bold" id="btn-processar-upload">
+                            <i class="bi bi-cpu"></i> Processar Arquivos
+                        </button>
+                    </form>
+
+                    <div id="area-progresso" class="mt-4" style="display: none;">
+                        <h6 id="status-texto" class="text-center text-muted mb-2">Iniciando processamento...</h6>
+                        <div class="progress" style="height: 25px;">
+                            <div id="barra" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;">0%</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label for="curso" class="form-label">Curso</label>
-                {% if user.is_authenticated %}
-                    <input type="hidden" id="curso" value="{{ user.perfil.curso }}">
-                    <input type="text" class="form-control bg-light" value="{{ user.perfil.get_curso_display }}" readonly>
-                {% else %}
-                    <select id="curso" class="form-select" required>
-                        <option value="" selected disabled>Selecione seu curso...</option>
-                        <option value="ontopsicologia">Ontopsicologia</option>
-                        <option value="administracao">Administração</option>
-                        <option value="sistemas_informacao">Sistemas de Informação</option>
-                        <option value="direito">Direito</option>
-                        <option value="pedagogia">Pedagogia</option>
-                        <option value="ciencias_contabeis">Ciências Contábeis</option>
-                        <option value="hotelaria">Hotelaria</option>
-                        <option value="gastronomia">Gastronomia</option>
-                    </select>
-                {% endif %}
+            <div class="text-center mt-4" id="area-planilha" style="display: none;">
+                <a href="#" class="btn btn-primary btn-lg shadow mb-3" id="link-planilha">
+                    <i class="bi bi-file-earmark-excel"></i> Baixar Planilha Pronta
+                </a>
+                <h6 class="text-danger fw-bold"><i class="bi bi-exclamation-triangle"></i> LEMBRE-SE: A IA PODE COMETER ERROS. SEMPRE FAÇA UMA REVISÃO NA PLANILHA ANTES DE ENVIAR PARA A SECRETARIA.</h6>
             </div>
-
-            <div class="mb-3">
-                <label for="arquivos" class="form-label">Certificados (PDF)</label>
-                <input type="file" id="arquivos" class="form-control" multiple accept=".pdf" required>
-            </div>
-            
-            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold" id="btn-gerar">Gerar Planilha Excel</button>
-        </form>
-
-        <div id="progresso-container" class="mt-4" style="display: none;">
-            <label id="status-texto" class="form-label fw-bold text-primary">Processando certificados...</label>
-            <div class="progress" style="height: 25px;">
-                <div id="barra" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%"></div>
-            </div>
-        </div>
-
-        <div id="download-area" class="mt-4 text-center" style="display: none;">
-            <a id="link-download" class="btn btn-success w-100 py-2 fw-bold">Baixar Planilha Preenchida</a>
         </div>
     </div>
 </div>
-{% endblock %}
-{% block extra_js %}
-    <script src="{% static 'js/main.js' %}"></script>
+
+<div class="modal fade" id="modalCertificados" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold text-primary"><i class="bi bi-file-earmark-pdf"></i> Meus Arquivos Pendentes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div id="lista-certificados-modal" class="list-group list-group-flush">
+                    </div>
+            </div>
+            <div class="modal-footer bg-light border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary fw-bold" id="btn-confirmar-modal">Confirmar Seleção</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // Elementos da Interface
+    const formExtracao = document.getElementById('form-extracao');
+    const inputArquivos = document.getElementById('arquivos');
+    const areaProgresso = document.getElementById('area-progresso');
+    const barra = document.getElementById('barra');
+    const statusTexto = document.getElementById('status-texto');
+    const areaPlanilha = document.getElementById('area-planilha');
+    const linkPlanilha = document.getElementById('link-planilha');
+    
+    // Elementos de aviso de seleção
+    const avisoSelecao = document.getElementById('aviso-selecao-banco');
+    const qtdSelecionados = document.getElementById('qtd-selecionados');
+
+    // ==========================================
+    // FLUXO ÚNICO: PROCESSAR TUDO (NOVOS + BANCO)
+    // ==========================================
+    if (formExtracao) {
+        formExtracao.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Pega os arquivos upados na hora
+            const arquivosNovos = inputArquivos.files;
+            
+            // Pega os arquivos selecionados no modal (escondido)
+            const selecionadosBanco = document.querySelectorAll('input[name="cert_id_modal"]:checked');
+            
+            const totalArquivos = arquivosNovos.length + selecionadosBanco.length;
+
+            if (totalArquivos === 0) {
+                alert("Selecione pelo menos um arquivo novo ou da sua conta.");
+                return;
+            }
+
+            iniciarProgresso();
+            let contadorGeral = 0;
+
+            // 1. Processa os arquivos NOVOS (Upload)
+            for (let i = 0; i < arquivosNovos.length; i++) {
+                contadorGeral++;
+                statusTexto.innerText = `Lendo arquivo novo (${contadorGeral}/${totalArquivos}): ${arquivosNovos[i].name}...`;
+                
+                const formData = new FormData();
+                formData.append('certificado', arquivosNovos[i]);
+                formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+                await enviarParaServidor(formData);
+                atualizarBarra(contadorGeral, totalArquivos);
+            }
+
+            // 2. Processa os arquivos DO BANCO (Modal)
+            for (let i = 0; i < selecionadosBanco.length; i++) {
+                contadorGeral++;
+                const id = selecionadosBanco[i].value;
+                const nome = selecionadosBanco[i].getAttribute('data-nome');
+                
+                statusTexto.innerText = `Processando arquivo da conta (${contadorGeral}/${totalArquivos}): ${nome}...`;
+                
+                const formData = new FormData();
+                formData.append('id_existente', id);
+                formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+                await enviarParaServidor(formData);
+                atualizarBarra(contadorGeral, totalArquivos);
+            }
+
+            finalizarProcesso();
+        });
+    }
+
+    // ==========================================
+    // GESTÃO DO MODAL (APENAS SELECIONAR E FECHAR)
+    // ==========================================
+    const modalCertificados = document.getElementById('modalCertificados');
+    
+    if (modalCertificados) {
+        modalCertificados.addEventListener('show.bs.modal', function () {
+            const listaContainer = document.getElementById('lista-certificados-modal');
+            
+            // Só faz fetch se a lista estiver vazia (evita recarregar toda hora que o modal abre)
+            if (listaContainer.innerHTML.trim() === '') {
+                listaContainer.innerHTML = '<div class="text-center p-4"><div class="spinner-border text-primary"></div><p class="mt-2 text-muted">Buscando seus arquivos...</p></div>';
+
+                fetch("{% url 'listar_certificados_novos' %}")
+                    .then(response => {
+                        if (!response.ok) throw new Error("Erro na rede");
+                        return response.json();
+                    })
+                    .then(data => {
+                        listaContainer.innerHTML = '';
+                        
+                        if (data.certificados.length === 0) {
+                            listaContainer.innerHTML = '<div class="p-4 text-center text-muted">Nenhum arquivo pendente.</div>';
+                            return;
+                        }
+                        
+                        data.certificados.forEach(c => {
+                            listaContainer.innerHTML += `
+                                <label class="list-group-item list-group-item-action d-flex align-items-center gap-3" style="cursor: pointer;">
+                                    <input class="form-check-input flex-shrink-0 checkbox-modal" type="checkbox" name="cert_id_modal" value="${c.id}" data-nome="${c.nome}">
+                                    <div class="text-truncate">
+                                        <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i>${c.nome}
+                                    </div>
+                                </label>
+                            `;
+                        });
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        listaContainer.innerHTML = '<div class="p-4 text-center text-danger">Erro ao carregar arquivos do servidor.</div>';
+                    });
+            }
+        });
+
+        // Botão de confirmar no Modal agora apenas atualiza a interface e fecha
+        document.getElementById('btn-confirmar-modal').addEventListener('click', function() {
+            const selecionados = document.querySelectorAll('input[name="cert_id_modal"]:checked');
+            
+            if (selecionados.length > 0) {
+                qtdSelecionados.innerText = selecionados.length;
+                avisoSelecao.style.display = 'block';
+            } else {
+                avisoSelecao.style.display = 'none';
+            }
+
+            const modalInstance = bootstrap.Modal.getInstance(modalCertificados);
+            modalInstance.hide();
+        });
+    }
+
+    // ==========================================
+    // FUNÇÕES AUXILIARES E FINALIZAÇÃO
+    // ==========================================
+    function iniciarProgresso() {
+        areaProgresso.style.display = 'block';
+        areaPlanilha.style.display = 'none';
+        barra.style.width = '0%';
+        barra.innerText = '0%';
+        barra.classList.remove('bg-danger');
+        barra.classList.add('bg-success');
+    }
+
+    function atualizarBarra(atual, total) {
+        let percent = Math.round((atual / total) * 100);
+        barra.style.width = percent + '%';
+        barra.innerText = percent + '%';
+    }
+
+    async function enviarParaServidor(formData) {
+        try {
+            const response = await fetch("{% url 'processar_arquivo' %}", {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            
+            if (!response.ok) {
+                console.error("Erro na IA:", data.erro);
+            }
+            return data;
+        } catch (error) {
+            console.error("Erro de requisição:", error);
+        }
+    }
+
+    function finalizarProcesso() {
+        statusTexto.innerText = "Processamento concluído!";
+        barra.classList.remove('progress-bar-animated');
+        
+        const nomeFinal = document.getElementById('nome').value;
+        const cursoFinal = document.getElementById('curso').value;
+        const urlBase = "{% url 'gerar_planilha' %}";
+        
+        if (nomeFinal && cursoFinal) {
+            const params = new URLSearchParams({
+                nome: nomeFinal,
+                curso: cursoFinal
+            });
+            linkPlanilha.href = `${urlBase}?${params.toString()}`;
+        }
+
+        if(avisoSelecao) avisoSelecao.style.display = 'none';
+        
+        areaPlanilha.style.display = 'block';
+    }
+});
+</script>
 {% endblock %}
