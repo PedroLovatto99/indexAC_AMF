@@ -10,6 +10,7 @@ urlpatterns = [
     path('limpar-sessao/', limpar_sessao, name='limpar_sessao'),
     path('cadastro/', cadastro_aluno, name='cadastro'),
     path('guia/', guia_horas, name='guia'),
+    path('perfil/', editar_perfil, name='perfil'),
     path('login/', Login.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
     path('meus-certificados/', dashboard_certificados, name='dashboard'),

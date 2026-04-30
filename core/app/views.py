@@ -12,7 +12,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
+from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
+from .forms import EditarPerfilForm
 
 
 def index(request):
@@ -53,6 +55,27 @@ class Login(LoginView):
     template_name = 'login.html'
     redirect_authenticated_user = True
 
+@login_required
+def editar_perfil(request):
+    perfil = getattr(request.user, 'perfil', None)
+    if not perfil:
+        perfil = PerfilAluno.objects.create(usuario=request.user)
+        
+    if request.method == 'POST':
+        form = EditarPerfilForm(request.POST, instance=perfil)
+        if form.is_valid():
+            form.save()
+            nova_senha = form.cleaned_data.get('nova_senha')
+            if nova_senha:
+                request.user.set_password(nova_senha)
+                request.user.save()
+                update_session_auth_hash(request, request.user)
+            messages.success(request, 'Perfil atualizado com sucesso!')
+            return redirect('perfil')
+    else:
+        form = EditarPerfilForm(instance=perfil)
+        
+    return render(request, 'perfil.html', {'form': form})
 
 @login_required
 def dashboard_certificados(request):

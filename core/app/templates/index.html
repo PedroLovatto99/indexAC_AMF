@@ -4,12 +4,13 @@
 
 {% block content %}
 <div class="text-center mb-5">
-    <p class="lead">Facilite a validação dos seus certificados e acompanhe suas atividades na faculdade de forma automatizada.</p>
+    <h2 class="card-title fw-bold">IndexAC-AMF</h2>
+    <p class="lead">Valide e organize os seus certificados de forma automatizada e simplificada.</p>
 </div>
 
 <div class="row justify-content-center g-4">
     
-    <div class="col-md-5">
+    <div class="col-lg-4 col-md-6">
         <div class="card h-100 shadow border-0 card-hover">
             <div class="card-body text-center p-5">
                 <div class="display-3 mb-3">📄</div>
@@ -21,14 +22,30 @@
         </div>
     </div>
 
-    <div class="col-md-5">
-        <div class="card h-100 shadow-sm border-0 bg-white" style="opacity: 0.8;">
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100 shadow border-0 card-hover">
             <div class="card-body text-center p-5">
                 <div class="display-3 mb-3">🎓</div>
                 <h3 class="card-title fw-bold">Guia de Horas</h3>
-                <p class="card-text text-muted mb-4">Descubra as regras, como conseguir horas complementares e como anexar o processo no drive.</p>
+                <p class="card-text text-muted mb-4">Descubra as regras, como conseguir horas complementares e como enviar a planilha para a secretaria.</p>
                 
-                <a href="{% url 'guia' %}" class="btn btn-primary btn-lg w-100">Acessar guia</a>
+                <a href="{% url 'guia' %}" class="btn btn-primary btn-lg w-100">Acessar Guia</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="card h-100 shadow border-0 card-hover">
+            <div class="card-body text-center p-5">
+                <div class="display-3 mb-3">🗂️</div>
+                <h3 class="card-title fw-bold">Armazenar Certificados</h3>
+                <p class="card-text text-muted mb-4">Crie uma conta para salvar seus certificados no sistema e acompanhar o progresso das suas horas.</p>
+                
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg w-100">Meus Certificados</a>
+                {% else %}
+                    <a href="{% url 'cadastro' %}" class="btn btn-primary btn-lg w-100">Criar Minha Conta</a>
+                {% endif %}
             </div>
         </div>
     </div>
