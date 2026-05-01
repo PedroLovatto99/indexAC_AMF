@@ -1,6 +1,7 @@
 import ollama
 import json
 import re
+import os
 
 def extrair_dados_com_ia_texto(texto_pdf):
     
@@ -36,7 +37,8 @@ def extrair_dados_com_ia_texto(texto_pdf):
         """
 
     try:
-        resposta = ollama.chat(
+        client = ollama.Client(host=os.getenv('OLLAMA_HOST', 'http://ollama:11434'))
+        resposta = client.chat(
             model='llama3.1',
             messages=[
                 {'role': 'system', 'content': prompt_sistema},

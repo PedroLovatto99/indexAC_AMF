@@ -1,6 +1,7 @@
 import ollama
 import json
 import re
+import os
 
 def extrair_dados_com_ia_imagem(caminho_imagem):
 
@@ -36,7 +37,8 @@ def extrair_dados_com_ia_imagem(caminho_imagem):
         """
 
     try:
-        resposta = ollama.chat(
+        client = ollama.Client(host=os.getenv('OLLAMA_HOST', 'http://ollama:11434'))
+        resposta = client.chat(
             model='minicpm-v',
             messages=[
                 {
