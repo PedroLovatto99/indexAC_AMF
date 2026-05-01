@@ -33,7 +33,12 @@ Antes de começar, certifique-se de que sua máquina atende aos seguintes requis
 git clone https://github.com/PedroLovatto99/indexAC_AMF
 ``` 
 
-**2.2 Abra o terminal (ou Prompt de Comando/PowerShell) na pasta raiz do projeto (onde está localizado o arquivo `docker-compose.yml`) e execute o comando abaixo:**
+**2.2 Entre na pasta**
+```bash
+cd indexAC_AMF/core
+``` 
+
+**2.3 Execute o comando:**
 
 ```bash
 docker-compose up --build
