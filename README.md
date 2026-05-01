@@ -20,6 +20,22 @@ IndexAC AMF é uma plataforma desenvolvida para facilitar a vida do acadêmico d
 
 ---
 
+## 🧠 Arquitetura e Processamento de IA
+
+O sistema utiliza um pipeline inteligente para garantir a extração precisa de dados dos certificados, lidando tanto com PDFs em formato de texto nativo quanto com PDFs baseados em imagens escaneadas. O fluxo de análise funciona da seguinte forma:
+
+1. **Extração de Texto (Fluxo Principal):**
+   - Inicialmente, o sistema tenta extrair o conteúdo textual do arquivo PDF utilizando as bibliotecas Python **PyMuPDF** e **pdfplumber**.
+   - Se a extração for bem-sucedida, esse texto é enviado para o modelo **LLaMA 3.1** (executado via Ollama).
+   - O modelo LLaMA 3.1 é o encarregado de interpretar o texto bruto extraído, organizando e identificando as informações exigidas do certificado (como nome do participante, carga horária, tema, etc.).
+
+2. **Processamento Visual (Fallback de Segurança):**
+   - Caso as bibliotecas não consigam extrair o texto (cenário comum quando o certificado é uma imagem escaneada ou um PDF sem camada de texto), o sistema ativa seu processo de *fallback*.
+   - O documento PDF é convertido em uma imagem.
+   - Em seguida, o modelo **MiniCPM-V** (modelo de visão computacional, também via Ollama) é acionado. Ele processa a imagem do certificado como uma foto e utiliza OCR avançado para extrair as informações de forma visual, garantindo a completude dos dados sem falhas para o usuário.
+
+---
+
 ## 🚀 Como Iniciar o Projeto (Passo a Passo)
 
 ### 1. Pré-requisitos
