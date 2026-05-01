@@ -1,10 +1,6 @@
 # IndexAC AMF - Sistema de Atividades Complementares com Inteligência Artificial
 
-Este projeto é uma plataforma desenvolvida com **Django**, integrada com Modelos de Inteligência Artificial (**Ollama**) para auxiliar na gestão, análise e direcionamento das Atividades Complementares (AC) acadêmicas. O sistema foi projetado para rodar completamente em **Docker**, facilitando a configuração do ambiente e garantindo que o banco de dados e os modelos de IA funcionem de forma orquestrada.
-
-## 🎯 Objetivo do Projeto
-
-O objetivo principal do projeto é oferecer um guia e um sistema de gerenciamento de Atividades Complementares mais inteligente, utilizando capacidades de IA locais (com os modelos **LLaMA 3.1** e **MiniCPM-V**) para processar informações, tirar dúvidas e interagir com as submissões acadêmicas de forma autônoma e segura (sem dependência de APIs externas pagas).
+IndexAC AMF é uma plataforma desenvolvida para facilitar a vida do acadêmico da Antonio Meneghetti Faculdade, possibilitando a gestão de certificados de atividades complementares e a extração de informações desses certificados com inteligência artificial e adicionando-as em uma planilha de forma totalmente automatizada.
 
 ## ✨ Funcionalidades Principais
 
