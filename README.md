@@ -57,7 +57,7 @@ cd indexAC_AMF/core
 **2.3 Execute o comando:**
 
 ```bash
-docker-compose up --build
+docker-compose up --build -d
 ```
 *(Pode demorar um pouco, pois por conta dos modelos do Llama o conteiner irá ficar pesado)*
 
