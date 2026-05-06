@@ -37,7 +37,8 @@ def extrair_dados_com_ia_texto(texto_pdf):
         """
 
     try:
-        client = ollama.Client(host=os.getenv('OLLAMA_HOST', 'http://ollama:11434'))
+        host = os.getenv('OLLAMA_HOST', 'http://localhost:11434')
+        client = ollama.Client(host=host)
         resposta = client.chat(
             model='llama3.1',
             messages=[
@@ -99,5 +100,5 @@ def extrair_dados_com_ia_texto(texto_pdf):
         return None
 
     except Exception as e:
-        print(f"[!] Erro no processamento Python/IA: {e}")
-        return None
+        print(f"[!] Erro no processamento Python/IA: {e}", flush=True)
+        raise e

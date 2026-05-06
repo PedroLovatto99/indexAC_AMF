@@ -37,7 +37,8 @@ def extrair_dados_com_ia_imagem(caminho_imagem):
         """
 
     try:
-        client = ollama.Client(host=os.getenv('OLLAMA_HOST', 'http://ollama:11434'))
+        host = os.getenv('OLLAMA_HOST', 'http://localhost:11434')
+        client = ollama.Client(host=host)
         resposta = client.chat(
             model='minicpm-v',
             messages=[

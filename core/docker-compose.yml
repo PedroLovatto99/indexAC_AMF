@@ -40,29 +40,30 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
-#    deploy:
-#      resources:
-#        reservations:
-#          devices:
-#            - driver: nvidia
-#              count: 1
-#              capabilities: [gpu]
+    deploy:
+     resources:
+       reservations:
+         devices:
+           - driver: nvidia
+             count: 1
+             capabilities: [gpu]
 
   ollama-pull-models:
-    image: curlimages/curl:latest
+    image: ollama/ollama:latest
     container_name: ollama_model_puller
+    entrypoint: ["sh", "-c"]
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
     depends_on:
       - ollama
     command: >
-      sh -c "
-      echo 'Waiting for Ollama to be ready...' &&
-      while ! curl -s http://ollama:11434/api/tags > /dev/null; do sleep 2; done &&
-      echo 'Ollama is ready. Downloading llama3.1...' &&
-      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"llama3.1\"}' &&
-      echo 'Downloading minicpm-v...' &&
-      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"minicpm-v\"}' &&
-      echo 'Models downloaded successfully.'
-      "
+      "echo 'Aguardando Ollama iniciar...' &&
+      while ! ollama list > /dev/null 2>&1; do sleep 2; done &&
+      echo 'Baixando Llama 3.1 (Aguarde, este arquivo tem ~5GB)...' &&
+      ollama pull llama3.1 &&
+      echo 'Baixando MiniCPM-V (Para processamento de imagens)...' &&
+      ollama pull minicpm-v &&
+      echo 'Todos os modelos foram baixados com sucesso!'"
 
 volumes:
   postgres_data:

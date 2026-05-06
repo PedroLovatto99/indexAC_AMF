@@ -258,6 +258,7 @@ document.addEventListener("DOMContentLoaded", function() {
             
             if (!response.ok) {
                 console.error("Erro na IA:", data.erro);
+                alert("Ocorreu um erro no servidor durante a extração:\n" + data.erro);
             }
             return data;
         } catch (error) {
